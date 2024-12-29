@@ -44,12 +44,15 @@ st.markdown("""
             display: inline;
             line-height: normal;
         }
-        .stButton>button:hover {
-            color: #ff0000;
-        }
         .table-header {
             font-weight: bold;
             background-color: #ddd;
+        }
+        .stDataframe th {
+            text-align: center;
+        }
+        .stDataframe td {
+            text-align: center;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -126,15 +129,15 @@ elif option == "Admin":
                 fin = debut + avis_par_page
                 historique_page = historique_filtre.iloc[debut:fin]
 
-                # Affichage du tableau avec suppression par icône uniquement
+                # Affichage du tableau avec suppression par le mot "Supprimer"
                 st.write("### Avis")
                 if not historique_page.empty:
-                    col0, col1, col2, col3, col4 = st.columns([1, 2, 4, 2, 1])
+                    col0, col1, col2, col3, col4 = st.columns([1, 2, 4, 2, 2])
                     col0.write("**#**")
                     col1.write("**User ID**")
                     col2.write("**Avis**")
                     col3.write("**Sentiment**")
-                    col4.write("")
+                    col4.write("**Action**")
                     for i, (row_index, row) in enumerate(historique_page.iterrows(), start=debut + 1):
                         with col0:
                             st.write(i)
@@ -145,9 +148,11 @@ elif option == "Admin":
                         with col3:
                             st.write(row['Sentiment'])
                         with col4:
-                            if st.button("🗑️", key=f"delete_{row_index}"):
-                                historique = historique.drop(row_index).reset_index(drop=True)
+                            if st.button("Supprimer", key=f"delete_{row_index}"):
+                                historique = historique.drop(historique.index[row_index]).reset_index(drop=True)
                                 sauvegarder_historique(historique)
+                                # Simuler une mise à jour en réaffichant la page
+                                st.experimental_set_query_params(refresh=True)
 
                 st.write(f"Page {current_page + 1} sur {total_pages}")
 
