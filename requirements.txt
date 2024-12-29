@@ -1,0 +1,4 @@
+streamlit
+joblib
+python-dotenv
+openai
